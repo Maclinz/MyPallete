@@ -10,7 +10,10 @@ const ctlIcons = document.querySelectorAll('.controls button')
 const settings = document.querySelectorAll('.color-adjust')
 const closeBtn = document.querySelectorAll('.close-adjustments')
 const lock = document.querySelectorAll('.lock-color');
-let initialColors = []
+let initialColors = [];
+
+//Local Storage Object
+let savedPalletes = [];
 
 
 //Event Elisterns
