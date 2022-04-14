@@ -10,6 +10,14 @@ const ctlIcons = document.querySelectorAll('.controls button')
 const settings = document.querySelectorAll('.color-adjust')
 const closeBtn = document.querySelectorAll('.close-adjustments')
 const lock = document.querySelectorAll('.lock-color');
+const saveBtn = document.querySelector('.save')
+const palleteNameInput = document.querySelector('.pallete-name')
+const submitSave = document.querySelector('.submit-save')
+const closeSavePopup = document.querySelector('.close-save-popup')
+const palletesCon = document.querySelector('.pallets-con')
+const saveContainer = document.querySelector('.save-container')
+const libraryContainer = document.querySelector('.library-container')
+const colorLibrary = document.querySelector('.color-library')
 let initialColors = [];
 
 //Local Storage Object
@@ -74,6 +82,18 @@ hexName.forEach((hex) =>{
 })
 
 generateBtn.addEventListener('click', randomColors)
+
+
+//Event listerns for pallete
+saveBtn.addEventListener('click', openPallete)
+closeSavePopup.addEventListener('click', closePallet)
+submitSave.addEventListener('click', savePallete)
+
+//hide pallete library
+palletesCon.addEventListener('click', openLibrary)
+
+//open pallete library
+colorLibrary.addEventListener('click', openLibrary)
 
 //generate a hex color
 const generateHex = () =>{
@@ -229,5 +249,101 @@ function openSliders(index){
 function closeSliders(index){
     slidersCon[index].classList.toggle('active')
 }
+
+
+//Save to pallete and local storage
+//Open Pallete creator
+function openPallete(e){
+    const popup = saveContainer.children[0];
+    saveContainer.classList.add('active')
+    popup.classList.add('active')
+}
+//close pallete
+function closePallet(e){
+    const popup = saveContainer.children[0];
+    saveContainer.classList.remove('active')
+    popup.classList.remove('active')
+}
+
+function savePallete(e){
+    const colors = []
+    const palleteName = palleteNameInput.value;
+    
+    colorDivs.forEach((color) =>{
+        const text = color.querySelector('h2').innerText;
+        colors.push(text)
+    })
+
+    //Pallete Object
+
+    const palleteNumber = savedPalletes.length + 1;
+
+    const pallete = {
+        name: palleteName,
+        colors: colors,
+        number: palleteNumber
+    }
+    savedPalletes.push(pallete)
+
+    //save to local storage
+    saveToLocal(pallete)
+
+
+    //close pallete
+    closePallet()
+    palleteNameInput.value = '';
+
+    //create a palette for the library
+    const palleteItem = document.createElement('div')
+    palleteItem.classList.add('pallete-item')
+
+    const title = document.createElement('h4')
+    title.innerText = pallete.name;
+    
+    const palleteItemContent = document.createElement('div')
+    palleteItemContent.classList.add('pallete-content')
+
+    const preview = document.createElement('div')
+    preview.classList.add('preview')
+
+    pallete.colors.forEach((color)=>{
+        const colorDivs = document.createElement('span')
+        colorDivs.classList.add('color-div')
+        colorDivs.style.backgroundColor = color;
+
+        preview.appendChild(colorDivs)
+    })
+    palleteItemContent.appendChild(preview)
+    palleteItemContent.appendChild(title)
+    palleteItem.appendChild(palleteItemContent)
+    //add pallet item to pallets container
+    palletesCon.appendChild(palleteItem)
+    
+}
+
+//Open library of palletes
+function openLibrary(e){
+    //toggle Hidden class
+    libraryContainer.classList.toggle('hidden')
+}
+
+//save to local storage
+function saveToLocal(pallete){
+    let pallets;
+
+    //check if there is something in the storage
+    if(localStorage.getItem('palletes') === null){
+        //create a new array if palletes doesn't exist
+        pallets = []
+    }else{
+        //return If there are items in there
+        pallets = JSON.parse(localStorage.getItem('palletes'))
+    }
+
+    //push pallete into the array and push back to local storage
+    pallets.push(pallete)
+    localStorage.setItem('palletes', JSON.stringify(pallets))
+}
+
 
 randomColors()
