@@ -405,6 +405,25 @@ button {
   padding: 3rem 15rem;
 }
 
+@media screen and (max-width: 1665px) {
+  .pallets-con {
+    padding: 3rem 8rem;
+  }
+}
+
+@media screen and (max-width: 1665px) {
+  .pallets-con {
+    padding: 3rem 3rem;
+  }
+}
+
+@media screen and (max-width: 670px) {
+  .pallets-con {
+    -ms-grid-columns: (1fr)[1];
+        grid-template-columns: repeat(1, 1fr);
+  }
+}
+
 .pallets-con::-webkit-scrollbar {
   width: 0.5rem;
 }
@@ -420,7 +439,7 @@ button {
 
 .pallets-con .pallete-item {
   width: 100%;
-  height: 300px;
+  height: 320px;
   background-color: #fff;
   border-radius: 15px;
   -webkit-box-shadow: 3px 10px 20px rgba(0, 0, 0, 0.2);
@@ -438,6 +457,14 @@ button {
   color: #fff;
   -webkit-box-shadow: 3px 15px 20px rgba(0, 0, 0, 0.5);
           box-shadow: 3px 15px 20px rgba(0, 0, 0, 0.5);
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.pallets-con .pallete-item:hover i {
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+  color: #fff !important;
 }
 
 .pallets-con .pallete-item .pallete-content {
@@ -450,6 +477,7 @@ button {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  pointer-events: none;
 }
 
 .pallets-con .pallete-item .pallete-content .preview {
@@ -479,17 +507,32 @@ button {
 }
 
 .pallets-con .pallete-item .pallete-content h4 {
-  font-size: 17px;
-  padding: .2rem 0;
+  font-size: 21px;
+  padding: .4rem 0;
   font-weight: 600;
   pointer-events: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.pallets-con .pallete-item .pallete-content h4 i {
+  color: #F32013;
 }
 
 .library-popup {
   position: relative;
   padding: 4rem;
   background: #000;
-  border-bottom: 4px solid #fff;
+  border-bottom: 15px solid #fff;
+  -webkit-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .library-popup h4 {
@@ -509,5 +552,43 @@ button {
   cursor: pointer;
   border-top-right-radius: 15px;
   border-bottom-left-radius: 15px;
+}
+
+.clear-pallete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  border-bottom-left-radius: 15px;
+  background-color: #F32013;
+  color: #fff;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+  outline: none;
+  border: none;
+  font-weight: 600;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.clear-pallete i {
+  margin-left: 1rem;
+}
+
+.clear-pallete:hover {
+  background-color: #037FFF;
+}
+
+@media screen and (max-width: 803px) {
+  h2 {
+    font-size: 1.3rem !important;
+  }
 }
 /*# sourceMappingURL=style.css.map */

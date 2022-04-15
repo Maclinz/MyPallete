@@ -18,8 +18,9 @@ const palletesCon = document.querySelector('.pallets-con')
 const saveContainer = document.querySelector('.save-container')
 const libraryContainer = document.querySelector('.library-container')
 const colorLibrary = document.querySelector('.color-library')
+const palleteItemBody = document.querySelectorAll('.pallete-item')
+const clearPallete = document.querySelector('.clear-pallete')
 let initialColors = [];
-
 //Local Storage Object
 let savedPalletes = [];
 
@@ -90,10 +91,31 @@ closeSavePopup.addEventListener('click', closePallet)
 submitSave.addEventListener('click', savePallete)
 
 //hide pallete library
-palletesCon.addEventListener('click', openLibrary)
+palletesCon.addEventListener('click', openLibrarySelect)
 
 //open pallete library
 colorLibrary.addEventListener('click', openLibrary)
+
+//clear palletes
+clearPallete.addEventListener('click', () =>{
+    localStorage.clear();
+    savedPalletes = [];
+    palletesCon.innerHTML = `<div class="pallete-item default-pallete">
+                                <div class="pallete-content">
+                                    <div class="preview">
+                                        <span class="color-div" style="background-color: rgb(188, 74, 86);">
+                                        </span><span class="color-div" style="background-color: rgb(98, 189, 176);">
+                                        </span><span class="color-div" style="background-color: rgb(133, 213, 5);">
+                                        </span><span class="color-div" style="background-color: rgb(45, 78, 117);">
+                                        </span><span class="color-div" style="background-color: rgb(79, 175, 178);">
+                                        </span>
+                                    </div>
+                                    <h4>Great GB Colours <i class="fi fi-sr-lock"></i></h4>
+                                </div>
+                            </div>`;
+})
+
+
 
 //generate a hex color
 const generateHex = () =>{
@@ -276,7 +298,13 @@ function savePallete(e){
 
     //Pallete Object
 
-    const palleteNumber = savedPalletes.length + 1;
+    let palleteNumber;
+    const palleteObj = JSON.parse(localStorage.getItem('palletes'));
+    if(palleteObj){
+        palleteNumber = palleteObj.length;
+    }else{
+        palleteNumber = savedPalletes.length;
+    }
 
     const pallete = {
         name: palleteName,
@@ -296,6 +324,7 @@ function savePallete(e){
     //create a palette for the library
     const palleteItem = document.createElement('div')
     palleteItem.classList.add('pallete-item')
+    palleteItem.classList.add(pallete.number)
 
     const title = document.createElement('h4')
     title.innerText = pallete.name;
@@ -319,10 +348,49 @@ function savePallete(e){
     //add pallet item to pallets container
     palletesCon.appendChild(palleteItem)
     
+
+    palletesCon.addEventListener('click', (e) =>{
+        const palleteindex = e.target.classList[1]
+        initialColors = [];
+
+        savedPalletes[palleteindex].colors.forEach((color, index) =>{
+            initialColors.push(color)
+            colorDivs[index].style.backgroundColor = color;
+            //check contrast
+            checkTextConrast(color, colorDivs[index].querySelector('h2'))
+            //update text
+            updateText(index)
+
+             //reset sliders
+            colorDivs.forEach((color, index) =>{
+                //reset sliders
+                const sliders = color.querySelectorAll('input[type="range"]')
+                sliders.forEach((slider) =>{
+                    slider.value = ''
+                })
+            })
+        })
+
+    })
+
+
+     //reset sliders
+    colorDivs.forEach((color, index) =>{
+        //reset sliders
+        const sliders = color.querySelectorAll('input[type="range"]')
+        sliders.forEach((slider) =>{
+            slider.value = ''
+        })
+    })
 }
 
 //Open library of palletes
 function openLibrary(e){
+    //toggle Hidden class
+    libraryContainer.classList.toggle('hidden')
+}
+
+function openLibrarySelect(e){
     //toggle Hidden class
     libraryContainer.classList.toggle('hidden')
 }
@@ -345,5 +413,84 @@ function saveToLocal(pallete){
     localStorage.setItem('palletes', JSON.stringify(pallets))
 }
 
+//get from local storage
+function getFromLocal(){
+    let pallets;
 
+    //check if there is something in the storage
+    if(localStorage.getItem('palletes') === null){
+        //create a new array if palletes doesn't exist
+        pallets = []
+    }else{
+        //return If there are items in there
+        pallets = JSON.parse(localStorage.getItem('palletes'))
+        //loop through the palletes
+        pallets.forEach((pallete, index) =>{
+            //create a palette for the library
+            const palleteItem = document.createElement('div')
+            palleteItem.classList.add('pallete-item')
+            palleteItem.classList.add(pallete.number)
+
+            const title = document.createElement('h4')
+            title.innerText = pallete.name;
+            
+            const palleteItemContent = document.createElement('div')
+            palleteItemContent.classList.add('pallete-content')
+
+            const preview = document.createElement('div')
+            preview.classList.add('preview')
+
+            pallete.colors.forEach((color)=>{
+                const colorDivs = document.createElement('span')
+                colorDivs.classList.add('color-div')
+                colorDivs.style.backgroundColor = color;
+
+                preview.appendChild(colorDivs)
+            })
+            palleteItemContent.appendChild(preview)
+            palleteItemContent.appendChild(title)
+            palleteItem.appendChild(palleteItemContent)
+            //add pallet item to pallets container
+            palletesCon.appendChild(palleteItem)
+        
+            palletesCon.addEventListener('click', (e) =>{
+                const palleteindex = e.target.classList[1]
+                initialColors = [];
+
+                pallets[palleteindex].colors.forEach((color, index) =>{
+                    initialColors.push(color)
+                    colorDivs[index].style.backgroundColor = color;
+                    //check contrast
+                    checkTextConrast(color, colorDivs[index].querySelector('h2'))
+                    //update text
+                    updateText(index)
+
+                    //reset sliders
+                    colorDivs.forEach((color, index) =>{
+                        //reset sliders
+                        const sliders = color.querySelectorAll('input[type="range"]')
+                        sliders.forEach((slider) =>{
+                            slider.value = ''
+                        })
+                    })
+                })
+        })
+
+
+            //reset sliders
+            colorDivs.forEach((color, index) =>{
+                //reset sliders
+                const sliders = color.querySelectorAll('input[type="range"]')
+                sliders.forEach((slider) =>{
+                    slider.value = ''
+                })
+            })
+        })
+    }
+
+    //return pallets
+    return pallets;
+}
+
+getFromLocal()
 randomColors()
